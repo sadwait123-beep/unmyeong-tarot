@@ -28,6 +28,10 @@
     border:1px solid rgba(233,196,106,.4); background:rgba(255,255,255,.04);
     color:var(--cream); font-size:15px; font-family:"Gowun Dodum",sans-serif; }
   textarea::placeholder { color:#7d75a3; }
+  select { width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(233,196,106,.4);
+    background:rgba(255,255,255,.04); color:var(--cream); font-size:14px; font-family:"Gowun Dodum",sans-serif;
+    outline:none; margin-bottom:14px; }
+  select option { background:#160f30; color:var(--cream); }
   .btn { width:100%; margin-top:12px; padding:15px; border-radius:14px; border:none; cursor:pointer;
     background:linear-gradient(135deg,var(--gold),var(--gold-soft)); color:#2a1a0a;
     font-size:16px; font-weight:700; font-family:"Nanum Myeongjo",serif; letter-spacing:2px;
@@ -118,6 +122,13 @@
 
   <div id="draw">
     <div id="askBox">
+      <label>어떤 방식으로 볼까?</label>
+      <select id="spreadSel" onchange="currentSpread = this.selectedIndex">
+        <option>과거 · 현재 · 미래</option>
+        <option>상황 · 행동 · 결과</option>
+        <option>나 · 상대 · 관계 (연애)</option>
+        <option>문제 · 원인 · 조언</option>
+      </select>
       <label>무엇이 궁금해? 마음속 질문을 적어줘.</label>
       <textarea id="q" rows="3" placeholder="예) 내 미래의 직업은 어떤 모습일까?"></textarea>
       <button class="btn" id="drawBtn" onclick="firstDraw()">🔮 과거·현재·미래 3장 펼치기</button>
@@ -347,7 +358,14 @@
 
   CARDS.forEach((c,i)=>{ c.img=CARD_IMG[i]; c.idx=i; c.meaning=MEANINGS[i]; });
 
-  const POSITIONS = ["과거", "현재", "미래"];
+  // 뽑기 방식(스프레드) — 3장의 자리가 질문에 따라 다른 의미를 가짐
+  const SPREADS = [
+    { name:"과거 · 현재 · 미래", pos:["과거","현재","미래"] },
+    { name:"상황 · 행동 · 결과", pos:["지금 상황","해야 할 행동","예상 결과"] },
+    { name:"나 · 상대 · 관계 (연애)", pos:["나의 마음","상대의 마음","관계의 흐름"] },
+    { name:"문제 · 원인 · 조언", pos:["지금의 문제","숨은 원인","해결의 실마리"] },
+  ];
+  let currentSpread = 0;
   let entries = [];
   let seq = 0;
 
@@ -360,10 +378,10 @@
   }
 
   // 카드 3장: 하나씩 차례로 펼쳐지는 애니메이션(딜레이)
-  function spreadHTML(cards){
+  function spreadHTML(cards, positions){
     const cols = cards.map((cc,i)=>{
       const c = cc.card, rev = cc.reversed, th = c.theme;
-      return `<div class="col"><div class="pos">${POSITIONS[i]}</div>
+      return `<div class="col"><div class="pos">${esc(positions[i])}</div>
         <div class="mini" onclick="openCard(${c.idx})" style="cursor:pointer;animation-delay:${(i*0.22).toFixed(2)}s;border-color:${th.edge};background:linear-gradient(160deg,${th.grad[0]},${th.grad[1]})">
         <div class="mpic" style="background:${th.grad[1]}"><img src="${c.img}" alt="${esc(c.ko)}" style="transform:${rev?'rotate(180deg)':'none'}" />
         <div class="mbadge">${c.badge}</div>${rev?'<div class="mrev">역</div>':''}
@@ -378,20 +396,21 @@
     if(e.loading) return '<div class="loadbox"><div class="spin"></div>세 장의 기운을 읽는 중...</div>';
     if(e.error) return '<div class="loadbox" style="color:#ff9d9d">운명의 기운이 잠시 흐려졌어. 다시 펼쳐볼래?</div>';
     const d = e.data;
-    if(d && d.past && d.present && d.future){
-      const row=(i,txt)=>`<div class="rblock" style="animation-delay:${(i*0.1).toFixed(2)}s"><span class="rlabel">${POSITIONS[i]} · ${esc(e.cards[i].card.ko)}</span>${esc(txt)}</div>`;
-      let html = row(0,d.past)+row(1,d.present)+row(2,d.future);
+    if(d && d.p1 && d.p2 && d.p3){
+      const txt = [d.p1, d.p2, d.p3];
+      const row=(i)=>`<div class="rblock" style="animation-delay:${(i*0.1).toFixed(2)}s"><span class="rlabel">${esc(e.positions[i])} · ${esc(e.cards[i].card.ko)}</span>${esc(txt[i])}</div>`;
+      let html = row(0)+row(1)+row(2);
       if(d.advice) html += `<div class="rblock"><span class="rlabel">🔑 조언</span>${esc(d.advice)}</div>`;
       if(d.closing) html += `<div class="rclose"><b>총평 ✦</b> ${esc(d.closing)}</div>`;
       return html;
     }
     // 형식이 깨졌을 때: 표시를 정리해서 통째로라도 읽기 좋게
-    return `<div class="rblock">${esc((e.raw||"").replace(/\[\[\s*(과거|현재|미래|조언|총평)\s*\]\]/g,"\n").trim())}</div>`;
+    return `<div class="rblock">${esc((e.raw||"").replace(/\[\[\s*(1|2|3|조언|총평)\s*\]\]/g,"\n").trim())}</div>`;
   }
 
   function renderThread(){
     document.getElementById("thread").innerHTML = entries.map((e,i)=>
-      `<div class="entry"><div class="qline"><b>Q${i+1}.</b> ${esc(e.q)}</div>${spreadHTML(e.cards)}<div class="reading" id="reading-${e.id}">${readingBody(e)}</div></div>`
+      `<div class="entry"><div class="qline"><b>Q${i+1}.</b> ${esc(e.q)} <span style="color:#6f6796">· ${esc(e.spreadName)}</span></div>${spreadHTML(e.cards, e.positions)}<div class="reading" id="reading-${e.id}">${readingBody(e)}</div></div>`
     ).join("");
   }
   function updateReading(e){
@@ -399,30 +418,31 @@
     if(el) el.innerHTML = readingBody(e);
   }
 
-  function buildPrompt(prior, q, cards){
+  function buildPrompt(prior, q, cards, positions, spreadName){
     const persona = "너는 '운명타로' 앱의 신비롭고 깊이 있는 타로 마스터야. 딱딱하지 않고 친한 친구처럼 편하게 반말로, 하지만 아주 자세하고 풍부하게 풀어줘.";
     const cardLines = cards.map((cc,i)=>{
       const m = cc.reversed ? cc.card.meaning.r : cc.card.meaning.u;
-      return `- ${POSITIONS[i]}: ${cc.card.ko} (${cc.card.en}) ${cc.reversed?'역방향':'정방향'} — 전통 의미: ${m}`;
+      return `- ${i+1}번 자리(${positions[i]}): ${cc.card.ko} (${cc.card.en}) ${cc.reversed?'역방향':'정방향'} — 전통 의미: ${m}`;
     }).join("\n");
     let ctx = "";
     if(prior.length){
       ctx = "지금까지의 상담 흐름:\n" + prior.map((e,i)=>{
-        const s = e.cards.map((cc,j)=>`${POSITIONS[j]} ${cc.card.ko}(${cc.reversed?'역':'정'})`).join(", ");
-        const sum = e.data ? (e.data.closing||"") : (e.raw||"");
+        const s = e.cards.map((cc,j)=>`${e.positions[j]} ${cc.card.ko}(${cc.reversed?'역':'정'})`).join(", ");
+        const sum = e.data ? (e.data.closing||"") : "";
         return `${i+1}) "${e.q}" → [${s}] → ${sum}`;
       }).join("\n") + "\n\n";
     }
     return persona + "\n" + ctx + (prior.length?"이어지는 추가 질문":"질문") + `: "${q}"\n\n`
-      + "이번에 과거·현재·미래 3장을 뽑았어:\n" + cardLines + "\n\n"
+      + `이번 뽑기 방식은 '${spreadName}'이야. 1번 자리는 '${positions[0]}', 2번 자리는 '${positions[1]}', 3번 자리는 '${positions[2]}'를 뜻해.\n`
+      + "뽑힌 카드:\n" + cardLines + "\n\n"
       + (prior.length ? "앞의 상담 흐름과도 자연스럽게 이어서, " : "")
-      + "각 카드를 그 자리(과거/현재/미래)의 의미로 아주 상세하게 풀어줘. "
-      + "특히 카드 그림 속 상징을 구체적으로 짚어줘 — 인물의 옷 색깔, 손에 든 물건, 자세, 배경 풍경 같은 걸 언급하고, 그게 무슨 의미인지, 그리고 그게 질문 속 상황(과거/현재/미래)과 어떻게 연결되는지 풀어줘.\n"
-      + "예시 느낌: \"검 여왕의 흰 드레스와 푸른 망토는 맑은 이성과 차분한 감정을 뜻하는데, 이건 네가 과거에 감정을 누르고 냉정하게 판단했던 시기를 보여줘…\" 처럼 그림의 상징을 의미·상황과 연결해서 자세히.\n\n"
-      + "아래 형식 그대로, 각 항목을 [[ ]] 표시로 구분해서만 답해. 인사말·마크다운·다른 말은 절대 붙이지 마.\n\n"
-      + "[[과거]]\n(과거 카드 풀이, 그림 상징을 짚으며 5~7문장)\n"
-      + "[[현재]]\n(현재 카드 풀이 5~7문장)\n"
-      + "[[미래]]\n(미래 카드 풀이 5~7문장)\n"
+      + "각 카드를 그 자리의 의미로 아주 상세하게 풀어줘. "
+      + "특히 카드 그림 속 상징을 구체적으로 짚어줘 — 인물의 옷 색깔, 손에 든 물건, 자세, 배경 풍경 같은 걸 언급하고, 그게 무슨 의미인지, 그리고 그게 그 자리(질문 속 상황)와 어떻게 연결되는지 풀어줘.\n"
+      + "예시 느낌: \"검 여왕의 흰 드레스와 푸른 망토는 맑은 이성과 차분한 감정을 뜻하는데, 이건 네가 그 자리에서 감정을 누르고 냉정하게 판단했음을 보여줘…\" 처럼 그림의 상징을 의미·상황과 연결해서 자세히.\n\n"
+      + "아래 형식 그대로, 각 항목을 [[ ]] 표시로 구분해서만 답해. 인사말·마크다운·다른 말은 절대 붙이지 마. (숫자 1·2·3은 각각 위의 1·2·3번 자리 풀이야.)\n\n"
+      + `[[1]]\n(1번 '${positions[0]}' 자리 풀이, 그림 상징을 짚으며 5~7문장)\n`
+      + `[[2]]\n(2번 '${positions[1]}' 자리 풀이 5~7문장)\n`
+      + `[[3]]\n(3번 '${positions[2]}' 자리 풀이 5~7문장)\n`
       + "[[조언]]\n(지금 무엇을 하면 좋을지 구체적 조언 3~4문장)\n"
       + "[[총평]]\n(세 장을 아우르는 따뜻한 마무리 2~3문장)\n\n"
       + "조건: 한국어, 친구처럼 편한 반말, 단정적 단언은 피하고, 신비롭지만 따뜻하고 이해하기 쉽게.";
@@ -438,22 +458,23 @@
   }
 
   function parseReading(text){
-    const keys = { "과거":"past", "현재":"present", "미래":"future", "조언":"advice", "총평":"closing" };
-    const parts = String(text).split(/\[\[\s*(과거|현재|미래|조언|총평)\s*\]\]/);
+    const keys = { "1":"p1", "2":"p2", "3":"p3", "조언":"advice", "총평":"closing" };
+    const parts = String(text).split(/\[\[\s*(1|2|3|조언|총평)\s*\]\]/);
     const out = {};
     for(let i=1;i<parts.length;i+=2){
       const label = parts[i];
       const content = (parts[i+1]||"").replace(/^[\s:：]+/,"").trim();
       if(keys[label] && content) out[keys[label]] = content;
     }
-    if(out.past && out.present && out.future) return out;
+    if(out.p1 && out.p2 && out.p3) return out;
     return null;
   }
 
   async function draw(q){
     const cards = pick3();
     const prior = entries.slice();
-    const entry = { id: ++seq, q, cards, data:null, raw:"", loading:true, error:false };
+    const sp = SPREADS[currentSpread];
+    const entry = { id: ++seq, q, cards, positions: sp.pos.slice(), spreadName: sp.name, data:null, raw:"", loading:true, error:false };
     entries.push(entry);
     document.getElementById("askBox").classList.add("hide");
     document.getElementById("reading").classList.remove("hide");
@@ -462,7 +483,7 @@
     renderThread();
     window.scrollTo({ top: 0, behavior: "smooth" });
     try {
-      const text = await callAI(buildPrompt(prior, q, cards));
+      const text = await callAI(buildPrompt(prior, q, cards, entry.positions, entry.spreadName));
       entry.raw = text;
       entry.data = parseReading(text);
     } catch(e) {
@@ -495,11 +516,11 @@
 
   function shareText(){
     return "🔮 운명타로\n\n" + entries.map((e,i)=>{
-      const s = e.cards.map((cc,j)=>`${POSITIONS[j]} ${cc.card.ko}${cc.reversed?'(역)':''}`).join(" / ");
+      const s = e.cards.map((cc,j)=>`${e.positions[j]} ${cc.card.ko}${cc.reversed?'(역)':''}`).join(" / ");
       let body = "";
-      if(e.data) body = `과거: ${e.data.past}\n현재: ${e.data.present}\n미래: ${e.data.future}` + (e.data.advice?`\n조언: ${e.data.advice}`:"") + (e.data.closing?`\n총평: ${e.data.closing}`:"");
+      if(e.data) body = `${e.positions[0]}: ${e.data.p1}\n${e.positions[1]}: ${e.data.p2}\n${e.positions[2]}: ${e.data.p3}` + (e.data.advice?`\n조언: ${e.data.advice}`:"") + (e.data.closing?`\n총평: ${e.data.closing}`:"");
       else body = e.raw||"";
-      return `Q${i+1}. ${e.q}\n[${s}]\n${body}`;
+      return `Q${i+1}. ${e.q} (${e.spreadName})\n[${s}]\n${body}`;
     }).join("\n\n") + "\n\n— 운명타로에서 뽑았어 ✦";
   }
   async function share(){
