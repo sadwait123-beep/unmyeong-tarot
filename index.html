@@ -19,9 +19,9 @@
     text-shadow:0 0 18px rgba(233,196,106,.35); }
   .sub { color:var(--muted); font-size:14px; }
   .tabs { display:flex; gap:8px; margin:16px 0 20px; }
-  .tab { flex:1; padding:10px; border-radius:12px; cursor:pointer; text-align:center;
+  .tab { flex:1; padding:9px 6px; border-radius:12px; cursor:pointer; text-align:center;
     border:1px solid rgba(233,196,106,.4); background:rgba(255,255,255,.04);
-    color:var(--muted); font-family:"Nanum Myeongjo",serif; font-size:15px; }
+    color:var(--muted); font-family:"Nanum Myeongjo",serif; font-size:13.5px; }
   .tab.active { background:linear-gradient(135deg,var(--gold),var(--gold-soft)); color:#2a1a0a; font-weight:700; }
   label { display:block; font-size:15px; margin-bottom:10px; color:var(--gold-soft); }
   textarea { width:100%; padding:14px; border-radius:12px; resize:none; outline:none;
@@ -55,6 +55,9 @@
     background:linear-gradient(135deg,var(--gold),var(--gold-soft)); padding:1px 7px; border-radius:12px; }
   .mrev { position:absolute; top:6px; right:6px; font-size:9px; color:var(--cream);
     background:rgba(0,0,0,.55); padding:1px 6px; border-radius:12px; border:1px solid var(--gold); }
+  .chip { position:absolute; bottom:6px; right:6px; width:24px; height:24px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:13px;
+    box-shadow:0 1px 4px rgba(0,0,0,.45); }
   .mname { font-family:"Nanum Myeongjo",serif; font-weight:700; font-size:13px; text-align:center; padding:7px 2px 8px; }
   .spreadmark { text-align:center; font-size:9px; letter-spacing:3px; color:rgba(244,213,141,.55); margin-top:8px; }
   .reading { margin-top:14px; }
@@ -77,6 +80,18 @@
   .cell { border:1px solid rgba(233,196,106,.3); border-radius:10px; overflow:hidden; background:#0d0a1f; }
   .cell img { width:100%; aspect-ratio:5/8; object-fit:contain; display:block; background:#0d0a1f; }
   .cell .cn { font-size:11px; text-align:center; padding:5px 2px; }
+  .streak { text-align:center; font-size:16px; margin-bottom:10px; }
+  .streak b { color:var(--gold-soft); font-family:"Nanum Myeongjo",serif; }
+  .stamps { display:flex; gap:6px; justify-content:center; margin-bottom:20px; }
+  .stamp { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:12px; color:var(--muted); border:1px solid rgba(233,196,106,.3); background:rgba(255,255,255,.03); }
+  .stamp.on { color:#2a1a0a; background:linear-gradient(135deg,var(--gold),var(--gold-soft)); border-color:var(--gold); font-weight:700; }
+  .stamp.today { box-shadow:0 0 0 2px rgba(244,213,141,.55); }
+  .dwrap { margin-bottom:14px; }
+  .dcard { width:210px; margin:0 auto; border-radius:13px; overflow:hidden; border:2px solid var(--gold);
+    background:linear-gradient(160deg,#3a2a6e,#1c1442); box-shadow:0 10px 26px rgba(0,0,0,.5);
+    animation:dealIn .7s cubic-bezier(.2,.8,.2,1) both; }
+  .dailyask { text-align:center; padding:14px 0; }
   .hide { display:none; }
 </style>
 </head>
@@ -89,8 +104,9 @@
   </div>
 
   <div class="tabs">
-    <div class="tab active" id="tabDraw" onclick="showTab('draw')">🔮 점 보기</div>
-    <div class="tab" id="tabGallery" onclick="showTab('gallery')">🎴 78장 갤러리</div>
+    <div class="tab active" id="tabDraw" onclick="showTab('draw')">🔮 점보기</div>
+    <div class="tab" id="tabDaily" onclick="showTab('daily')">📅 오늘의 카드</div>
+    <div class="tab" id="tabGallery" onclick="showTab('gallery')">🎴 갤러리</div>
   </div>
 
   <div id="draw">
@@ -118,6 +134,11 @@
   <div id="gallery" class="hide">
     <div class="note" style="margin-top:0;margin-bottom:12px">스크롤하면 78장의 진짜 타로 그림이 모두 떠요 ✦</div>
     <div class="grid" id="grid"></div>
+  </div>
+
+  <div id="daily" class="hide">
+    <div id="streakBar"></div>
+    <div id="dailyContent"></div>
   </div>
 </div>
 
@@ -220,9 +241,17 @@
     "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Pents14.jpg/500px-Pents14.jpg",
   ];
 
+  // 그룹별 색 테마 (틀 색깔 + 그룹 표시)
+  const T = {
+    major:     { grad:["#3a2a6e","#1c1442"], edge:"#e9c46a", chip:"✦" },
+    Wands:     { grad:["#5a2a1c","#2a120a"], edge:"#f0915a", chip:"🔥" },
+    Cups:      { grad:["#15375e","#0c1a30"], edge:"#6cc6e0", chip:"💧" },
+    Swords:    { grad:["#34394f","#161a2c"], edge:"#c2cae6", chip:"⚔️" },
+    Pentacles: { grad:["#234a2a","#0f2615"], edge:"#86c779", chip:"🪙" },
+  };
   const CARDS = [];
-  MAJORS.forEach((m,i)=>CARDS.push({en:m[0],ko:m[1],sym:m[2],key:m[3],arcana:"메이저 아르카나",badge:ROMAN[i]}));
-  SUITS.forEach((s)=>RANKS.forEach((r,ri)=>CARDS.push({en:r[1]+" of "+s[1],ko:s[0]+" "+r[0],sym:s[2],key:s[3],arcana:"마이너 · "+s[0],badge:RANK_BADGE[ri]})));
+  MAJORS.forEach((m,i)=>CARDS.push({en:m[0],ko:m[1],sym:m[2],key:m[3],arcana:"메이저 아르카나",badge:ROMAN[i],theme:T.major}));
+  SUITS.forEach((s)=>RANKS.forEach((r,ri)=>CARDS.push({en:r[1]+" of "+s[1],ko:s[0]+" "+r[0],sym:s[2],key:s[3],arcana:"마이너 · "+s[0],badge:RANK_BADGE[ri],theme:T[s[1]]})));
   CARDS.forEach((c,i)=>c.img=CARD_IMG[i]);
 
   const POSITIONS = ["과거", "현재", "미래"];
@@ -240,11 +269,12 @@
   // 카드 3장: 하나씩 차례로 펼쳐지는 애니메이션(딜레이)
   function spreadHTML(cards){
     const cols = cards.map((cc,i)=>{
-      const c = cc.card, rev = cc.reversed;
+      const c = cc.card, rev = cc.reversed, th = c.theme;
       return `<div class="col"><div class="pos">${POSITIONS[i]}</div>
-        <div class="mini" style="animation-delay:${(i*0.22).toFixed(2)}s">
-        <div class="mpic"><img src="${c.img}" alt="${esc(c.ko)}" style="transform:${rev?'rotate(180deg)':'none'}" />
-        <div class="mbadge">${c.badge}</div>${rev?'<div class="mrev">역</div>':''}</div>
+        <div class="mini" style="animation-delay:${(i*0.22).toFixed(2)}s;border-color:${th.edge};background:linear-gradient(160deg,${th.grad[0]},${th.grad[1]})">
+        <div class="mpic" style="background:${th.grad[1]}"><img src="${c.img}" alt="${esc(c.ko)}" style="transform:${rev?'rotate(180deg)':'none'}" />
+        <div class="mbadge">${c.badge}</div>${rev?'<div class="mrev">역</div>':''}
+        <div class="chip" style="background:${th.edge}">${th.chip}</div></div>
         <div class="mname">${esc(c.ko)}</div></div></div>`;
     }).join("");
     return `<div class="spread">${cols}</div><div class="spreadmark">✦ 운명타로 ✦</div>`;
@@ -378,18 +408,101 @@
   }
 
   function showTab(which){
-    const isDraw = which === "draw";
-    document.getElementById("draw").classList.toggle("hide", !isDraw);
-    document.getElementById("gallery").classList.toggle("hide", isDraw);
-    document.getElementById("tabDraw").classList.toggle("active", isDraw);
-    document.getElementById("tabGallery").classList.toggle("active", !isDraw);
-    if(!isDraw) buildGallery();
+    ["draw","daily","gallery"].forEach(k=>{
+      document.getElementById(k).classList.toggle("hide", k!==which);
+      const tab = document.getElementById("tab"+k.charAt(0).toUpperCase()+k.slice(1));
+      if(tab) tab.classList.toggle("active", k===which);
+    });
+    if(which==="gallery") buildGallery();
+    if(which==="daily") renderDaily();
   }
   let galleryBuilt = false;
   function buildGallery(){
     if(galleryBuilt) return; galleryBuilt = true;
-    document.getElementById("grid").innerHTML = CARDS.map(c=>`<div class="cell"><img loading="lazy" src="${c.img}" alt="${esc(c.ko)}" /><div class="cn">${esc(c.ko)}</div></div>`).join("");
+    document.getElementById("grid").innerHTML = CARDS.map(c=>`<div class="cell" style="border-color:${c.theme.edge}"><img loading="lazy" src="${c.img}" alt="${esc(c.ko)}" /><div class="cn">${esc(c.ko)}</div></div>`).join("");
   }
+
+  /* ───────── 오늘의 카드 + 출석 도장 ───────── */
+  // (저장 기능: 실제 웹사이트에서 작동. 막힌 환경이면 자동으로 그냥 넘어가요.)
+  function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  function ymd(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  function todayStr(){ return ymd(new Date()); }
+  function dayDiff(a,b){ return Math.round((new Date(b+"T00:00:00") - new Date(a+"T00:00:00"))/86400000); }
+
+  let dailyEntry = null;
+  function loadDaily(){
+    try { const raw=lsGet("ut_daily"); if(raw){ const o=JSON.parse(raw); if(o && o.date===todayStr()) dailyEntry=o; } } catch(e){}
+  }
+  function saveDaily(){ lsSet("ut_daily", JSON.stringify(dailyEntry)); }
+
+  function getStreak(){ try { return JSON.parse(lsGet("ut_streak")||"{}"); } catch(e){ return {}; } }
+  function markAttendance(){
+    const s = getStreak(); const t = todayStr();
+    let visited = s.visited || [];
+    if(!visited.includes(t)){
+      if(s.last){ const diff = dayDiff(s.last, t); if(diff===1) s.count=(s.count||0)+1; else if(diff>1) s.count=1; }
+      else { s.count = 1; }
+      s.last = t; visited.push(t); if(visited.length>40) visited = visited.slice(-40); s.visited = visited;
+      lsSet("ut_streak", JSON.stringify(s));
+    }
+  }
+
+  function dailyCardHTML(e){
+    const c = CARDS[e.cardIndex], rev = e.reversed, th = c.theme;
+    return `<div class="dwrap"><div class="dcard" style="border-color:${th.edge};background:linear-gradient(160deg,${th.grad[0]},${th.grad[1]})">
+      <div class="mpic" style="height:300px;background:${th.grad[1]}"><img src="${c.img}" alt="${esc(c.ko)}" style="transform:${rev?'rotate(180deg)':'none'}" />
+      <div class="mbadge">${c.badge}</div>${rev?'<div class="mrev">역</div>':''}
+      <div class="chip" style="background:${th.edge}">${th.chip}</div></div>
+      <div class="mname" style="font-size:16px">${esc(c.ko)}</div>
+      <div style="font-size:11px;color:var(--muted);padding-bottom:9px">${rev?'역방향':'정방향'} · ${c.arcana}</div>
+      </div></div>`;
+  }
+  function dailyReadingHTML(e){
+    if(e.loading) return '<div class="loadbox"><div class="spin"></div>오늘의 기운을 읽는 중...</div>';
+    if(e.error) return '<div class="loadbox" style="color:#ff9d9d">기운이 잠시 흐려졌어. 잠시 후 다시 들어와줘!</div>';
+    return `<div class="rclose"><b>오늘의 운세 ✦</b> ${esc(e.reading)}</div>`;
+  }
+
+  function renderDaily(){
+    const s = getStreak();
+    const visited = new Set(s.visited||[]);
+    const days = ["일","월","화","수","목","금","토"];
+    let stamps = "";
+    for(let i=6;i>=0;i--){
+      const d=new Date(); d.setDate(d.getDate()-i); const ds=ymd(d);
+      const on = visited.has(ds), today = ds===todayStr();
+      stamps += `<div class="stamp ${on?'on':''} ${today?'today':''}">${on?'✦':days[d.getDay()]}</div>`;
+    }
+    document.getElementById("streakBar").innerHTML =
+      `<div class="streak">🔥 <b>${s.count||0}일</b> 연속 출석</div><div class="stamps">${stamps}</div>`;
+
+    const box = document.getElementById("dailyContent");
+    if(dailyEntry){
+      box.innerHTML = dailyCardHTML(dailyEntry) + dailyReadingHTML(dailyEntry);
+    } else {
+      box.innerHTML = `<div class="dailyask"><p style="color:var(--muted);margin-bottom:4px">오늘 당신을 위한 카드 한 장을 받아보세요.</p>
+        <button class="btn" onclick="drawDaily()">📅 오늘의 카드 받기</button></div>`;
+    }
+  }
+
+  async function drawDaily(){
+    const k = Math.floor(Math.random()*CARDS.length);
+    const reversed = Math.random()<0.4;
+    dailyEntry = { date: todayStr(), cardIndex:k, reversed, reading:"", loading:true, error:false };
+    saveDaily(); markAttendance(); renderDaily();
+    try {
+      const c = CARDS[k];
+      const prompt = "너는 '운명타로' 앱의 신비로운 타로 마스터야. 친한 친구처럼 편하게 반말로 얘기해.\n"
+        + `오늘 뽑은 '오늘의 카드': ${c.ko} (${c.en}) - ${reversed?'역방향':'정방향'}\n`
+        + "이 카드 한 장으로 오늘 하루의 운세를 따뜻하고 재미있게 알려줘.\n"
+        + "규칙: 한국어 2~3문장, 카드 이름을 자연스럽게 언급, 가볍고 기운 나게, 재미로 보는 분위기.";
+      dailyEntry.reading = await callAI(prompt);
+    } catch(e){ dailyEntry.error = true; }
+    finally { dailyEntry.loading=false; saveDaily(); renderDaily(); }
+  }
+
+  loadDaily();
 </script>
 </body>
 </html>
