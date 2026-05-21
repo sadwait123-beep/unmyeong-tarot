@@ -12,7 +12,7 @@
   body { margin:0; min-height:100vh; padding:28px 16px 60px;
     background: radial-gradient(circle at 30% 8%, #2a1a4e 0%, #150f33 45%, #0a0820 100%);
     color: var(--cream); font-family:"Gowun Dodum",sans-serif; }
-  .wrap { max-width:480px; margin:0 auto; }
+  .wrap { max-width:500px; margin:0 auto; }
   .head { text-align:center; margin-bottom:18px; }
   .kicker { font-size:12px; letter-spacing:6px; color:var(--gold); }
   h1 { font-family:"Nanum Myeongjo",serif; font-weight:800; font-size:38px; margin:6px 0 4px;
@@ -37,28 +37,41 @@
   .btn.ghost { background:rgba(233,196,106,.12); border:1px solid var(--gold); color:var(--gold-soft); }
   .btn.plain { background:transparent; color:#8a82ac; font-family:"Gowun Dodum",sans-serif; font-size:14px; }
   .note { color:#6f6796; font-size:11px; text-align:center; margin-top:12px; }
-  .qline { text-align:center; color:var(--muted); font-size:14px; margin-bottom:14px; }
+  .qline { text-align:center; color:var(--muted); font-size:14px; margin-bottom:16px; }
   .qline b { color:var(--gold-soft); }
-  @keyframes dealIn { from{opacity:0;transform:perspective(900px) rotateY(78deg);} to{opacity:1;transform:perspective(900px) rotateY(0);} }
+  @keyframes dealIn { from{opacity:0;transform:perspective(900px) rotateY(85deg) translateY(10px);} to{opacity:1;transform:perspective(900px) rotateY(0) translateY(0);} }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .spread { display:flex; gap:8px; justify-content:center; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
+  .spread { display:flex; gap:10px; justify-content:center; }
   .col { flex:1; max-width:33%; }
-  .pos { text-align:center; font-size:11px; color:var(--gold-soft); letter-spacing:1px; margin-bottom:5px; }
-  .mini { border-radius:12px; overflow:hidden; border:1px solid var(--gold);
-    background:linear-gradient(160deg,#3a2a6e,#1c1442); animation:dealIn .8s cubic-bezier(.2,.8,.2,1) both; }
-  .mpic { position:relative; height:160px; background:#0d0a1f; display:flex; align-items:center; justify-content:center; }
+  .pos { text-align:center; font-size:12px; color:var(--gold-soft); letter-spacing:1px; margin-bottom:6px; font-family:"Nanum Myeongjo",serif; }
+  .mini { border-radius:13px; overflow:hidden; border:2px solid var(--gold);
+    background:linear-gradient(160deg,#3a2a6e,#1c1442);
+    box-shadow:0 8px 20px rgba(0,0,0,.45);
+    animation:dealIn .7s cubic-bezier(.2,.8,.2,1) both; }
+  .mpic { position:relative; height:210px; background:#0d0a1f; display:flex; align-items:center; justify-content:center; }
   .mpic img { width:100%; height:100%; object-fit:contain; }
-  .mbadge { position:absolute; top:5px; left:5px; font-size:9px; font-weight:700; color:#2a1a0a;
-    background:linear-gradient(135deg,var(--gold),var(--gold-soft)); padding:1px 6px; border-radius:12px; }
-  .mrev { position:absolute; top:5px; right:5px; font-size:8px; color:var(--cream);
-    background:rgba(0,0,0,.55); padding:1px 5px; border-radius:12px; border:1px solid var(--gold); }
-  .mname { font-family:"Nanum Myeongjo",serif; font-weight:700; font-size:12px; text-align:center; padding:6px 2px 7px; }
+  .mbadge { position:absolute; top:6px; left:6px; font-size:10px; font-weight:700; color:#2a1a0a;
+    background:linear-gradient(135deg,var(--gold),var(--gold-soft)); padding:1px 7px; border-radius:12px; }
+  .mrev { position:absolute; top:6px; right:6px; font-size:9px; color:var(--cream);
+    background:rgba(0,0,0,.55); padding:1px 6px; border-radius:12px; border:1px solid var(--gold); }
+  .mname { font-family:"Nanum Myeongjo",serif; font-weight:700; font-size:13px; text-align:center; padding:7px 2px 8px; }
   .spreadmark { text-align:center; font-size:9px; letter-spacing:3px; color:rgba(244,213,141,.55); margin-top:8px; }
-  .reading { margin-top:14px; background:rgba(255,255,255,.05); border:1px solid rgba(233,196,106,.25);
-    border-radius:16px; padding:18px; line-height:1.7; font-size:15px; min-height:60px; }
-  .spin { width:24px; height:24px; border:3px solid rgba(233,196,106,.25); border-top-color:var(--gold);
-    border-radius:50%; margin:2px auto 10px; animation:spin .8s linear infinite; }
-  .entry { margin-bottom:28px; }
+  .reading { margin-top:14px; }
+  .rblock { background:rgba(255,255,255,.05); border:1px solid rgba(233,196,106,.22);
+    border-radius:14px; padding:14px 16px; margin-bottom:10px; line-height:1.65; font-size:14px;
+    animation:fadeUp .5s ease both; }
+  .rlabel { display:block; font-family:"Nanum Myeongjo",serif; font-weight:700; font-size:14px;
+    color:var(--gold-soft); margin-bottom:5px; }
+  .rclose { background:linear-gradient(160deg,rgba(233,196,106,.16),rgba(233,196,106,.06));
+    border:1px solid rgba(233,196,106,.35); border-radius:14px; padding:14px 16px;
+    line-height:1.65; font-size:14px; animation:fadeUp .5s ease both; }
+  .rclose b { color:var(--gold-soft); }
+  .spin { width:26px; height:26px; border:3px solid rgba(233,196,106,.25); border-top-color:var(--gold);
+    border-radius:50%; margin:6px auto 12px; animation:spin .8s linear infinite; }
+  .loadbox { background:rgba(255,255,255,.05); border:1px solid rgba(233,196,106,.22);
+    border-radius:14px; padding:18px; text-align:center; color:var(--muted); }
+  .entry { margin-bottom:30px; }
   .divider { border-top:1px solid rgba(233,196,106,.2); padding-top:18px; margin-top:4px; }
   .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
   .cell { border:1px solid rgba(233,196,106,.3); border-radius:10px; overflow:hidden; background:#0d0a1f; }
@@ -214,20 +227,22 @@
 
   const POSITIONS = ["과거", "현재", "미래"];
   let entries = [];
+  let seq = 0;
 
-  function esc(s){ return (s||"").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function esc(s){ return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
-  // 서로 다른 3장 뽑기 (각각 정/역 무작위)
   function pick3(){
     const idx = [...Array(CARDS.length).keys()];
     for(let i=idx.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [idx[i],idx[j]]=[idx[j],idx[i]]; }
     return idx.slice(0,3).map(k=>({ card: CARDS[k], reversed: Math.random()<0.4 }));
   }
 
+  // 카드 3장: 하나씩 차례로 펼쳐지는 애니메이션(딜레이)
   function spreadHTML(cards){
     const cols = cards.map((cc,i)=>{
       const c = cc.card, rev = cc.reversed;
-      return `<div class="col"><div class="pos">${POSITIONS[i]}</div><div class="mini">
+      return `<div class="col"><div class="pos">${POSITIONS[i]}</div>
+        <div class="mini" style="animation-delay:${(i*0.22).toFixed(2)}s">
         <div class="mpic"><img src="${c.img}" alt="${esc(c.ko)}" style="transform:${rev?'rotate(180deg)':'none'}" />
         <div class="mbadge">${c.badge}</div>${rev?'<div class="mrev">역</div>':''}</div>
         <div class="mname">${esc(c.ko)}</div></div></div>`;
@@ -235,14 +250,28 @@
     return `<div class="spread">${cols}</div><div class="spreadmark">✦ 운명타로 ✦</div>`;
   }
 
+  // 풀이 영역: 로딩 / 오류 / 과거·현재·미래 따로 + 총평
+  function readingBody(e){
+    if(e.loading) return '<div class="loadbox"><div class="spin"></div>세 장의 기운을 읽는 중...</div>';
+    if(e.error) return '<div class="loadbox" style="color:#ff9d9d">운명의 기운이 잠시 흐려졌어. 다시 펼쳐볼래?</div>';
+    const d = e.data;
+    if(d && d.past && d.present && d.future){
+      const row=(i,txt)=>`<div class="rblock" style="animation-delay:${(i*0.12).toFixed(2)}s"><span class="rlabel">${POSITIONS[i]} · ${esc(e.cards[i].card.ko)}</span>${esc(txt)}</div>`;
+      return row(0,d.past)+row(1,d.present)+row(2,d.future)
+        + (d.closing?`<div class="rclose"><b>총평 ✦</b> ${esc(d.closing)}</div>`:"");
+    }
+    // JSON 파싱 실패 시: 통째로라도 보여주기
+    return `<div class="rblock">${esc(e.raw||"")}</div>`;
+  }
+
   function renderThread(){
-    document.getElementById("thread").innerHTML = entries.map((e,i)=>{
-      let body;
-      if(e.loading) body = '<div class="spin"></div><div style="text-align:center;color:var(--muted)">세 장의 기운을 읽는 중...</div>';
-      else if(e.error) body = '<span style="color:#ff9d9d">운명의 기운이 잠시 흐려졌어. 다시 펼쳐볼래?</span>';
-      else body = esc(e.reading);
-      return `<div class="entry"><div class="qline"><b>Q${i+1}.</b> ${esc(e.q)}</div>${spreadHTML(e.cards)}<div class="reading">${body}</div></div>`;
-    }).join("");
+    document.getElementById("thread").innerHTML = entries.map((e,i)=>
+      `<div class="entry"><div class="qline"><b>Q${i+1}.</b> ${esc(e.q)}</div>${spreadHTML(e.cards)}<div class="reading" id="reading-${e.id}">${readingBody(e)}</div></div>`
+    ).join("");
+  }
+  function updateReading(e){
+    const el = document.getElementById("reading-"+e.id);
+    if(el) el.innerHTML = readingBody(e);
   }
 
   function buildPrompt(prior, q, cards){
@@ -252,14 +281,17 @@
     if(prior.length){
       ctx = "지금까지의 상담 흐름:\n" + prior.map((e,i)=>{
         const s = e.cards.map((cc,j)=>`${POSITIONS[j]} ${cc.card.ko}(${cc.reversed?'역':'정'})`).join(", ");
-        return `${i+1}) 질문 "${e.q}" → 뽑은 카드 [${s}] → 풀이: ${e.reading}`;
+        const sum = e.data ? `${e.data.past} / ${e.data.present} / ${e.data.future}` : (e.raw||"");
+        return `${i+1}) 질문 "${e.q}" → [${s}] → 풀이: ${sum}`;
       }).join("\n") + "\n\n";
     }
     return persona + "\n" + ctx + (prior.length?"이어지는 추가 질문":"질문") + `: "${q}"\n`
       + `이번에 과거·현재·미래 3장을 뽑았어: ${spreadStr}\n`
-      + "이 세 장을 과거 → 현재 → 미래의 하나의 흐름으로 자연스럽게 엮어서, 질문에 대해 풀이해줘."
-      + (prior.length ? " 앞의 상담 흐름과도 자연스럽게 이어줘." : "")
-      + "\n\n규칙:\n- 한국어로 5~7문장 정도\n- 과거/현재/미래 각 카드를 흐름 속에서 한 번씩 언급\n- 신비롭지만 너무 무겁지 않게, 친구처럼 편하게\n- 마지막은 기운 나는 한마디로 마무리\n- 가볍게 재미로 보는 분위기 유지";
+      + (prior.length ? "앞의 상담 흐름과도 자연스럽게 이어서, " : "")
+      + "각 카드를 그 자리(과거/현재/미래)의 의미로 풀어줘.\n\n"
+      + "반드시 아래 JSON 형식으로만 답해. 다른 말이나 마크다운(```)은 절대 붙이지 마.\n"
+      + '{"past":"과거 카드 풀이 1~2문장","present":"현재 카드 풀이 1~2문장","future":"미래 카드 풀이 1~2문장","closing":"세 장을 아우르는 따뜻한 한마디 1문장"}\n\n'
+      + "조건: 한국어, 친구처럼 편한 반말, 각 카드 이름을 자연스럽게 언급, 신비롭지만 무겁지 않게, 가볍게 재미로 보는 분위기.";
   }
 
   async function callAI(prompt){
@@ -271,10 +303,21 @@
     return d.text;
   }
 
+  function parseReading(text){
+    try {
+      let t = String(text).replace(/```json/gi,"").replace(/```/g,"").trim();
+      const a = t.indexOf("{"), b = t.lastIndexOf("}");
+      if(a>=0 && b>a) t = t.slice(a, b+1);
+      const obj = JSON.parse(t);
+      if(obj && obj.past && obj.present && obj.future) return obj;
+    } catch(e){}
+    return null;
+  }
+
   async function draw(q){
     const cards = pick3();
     const prior = entries.slice();
-    const entry = { q, cards, reading:"", loading:true, error:false };
+    const entry = { id: ++seq, q, cards, data:null, raw:"", loading:true, error:false };
     entries.push(entry);
     document.getElementById("askBox").classList.add("hide");
     document.getElementById("reading").classList.remove("hide");
@@ -283,13 +326,15 @@
     renderThread();
     window.scrollTo({ top: 0, behavior: "smooth" });
     try {
-      entry.reading = await callAI(buildPrompt(prior, q, cards));
+      const text = await callAI(buildPrompt(prior, q, cards));
+      entry.raw = text;
+      entry.data = parseReading(text);
     } catch(e) {
       entry.error = true;
     } finally {
       entry.loading = false;
       document.getElementById("moreBtn").disabled = false;
-      renderThread();
+      updateReading(entry);
     }
   }
 
@@ -315,7 +360,10 @@
   function shareText(){
     return "🔮 운명타로\n\n" + entries.map((e,i)=>{
       const s = e.cards.map((cc,j)=>`${POSITIONS[j]} ${cc.card.ko}${cc.reversed?'(역)':''}`).join(" / ");
-      return `Q${i+1}. ${e.q}\n[${s}]\n${e.reading}`;
+      let body = "";
+      if(e.data) body = `과거: ${e.data.past}\n현재: ${e.data.present}\n미래: ${e.data.future}` + (e.data.closing?`\n총평: ${e.data.closing}`:"");
+      else body = e.raw||"";
+      return `Q${i+1}. ${e.q}\n[${s}]\n${body}`;
     }).join("\n\n") + "\n\n— 운명타로에서 뽑았어 ✦";
   }
   async function share(){
@@ -325,279 +373,7 @@
     try { await navigator.clipboard.writeText(text); } catch(e){}
     document.getElementById("shareBox").innerHTML =
       `<p style="color:var(--gold-soft);font-size:13px;margin:12px 0 6px">아래 글을 복사해서 친구에게 보내봐 👇</p>
-       <textarea readonly rows="9" onclick="this.select()" style="width:100%;padding:14px;border-radius:12px;border:1px solid var(--gold);background:rgba(0,0,0,.25);color:var(--cream);font-size:13px;line-height:1.6">${esc(text)}</textarea>`;
-    const ta = document.querySelector("#shareBox textarea"); if(ta){ ta.focus(); ta.select(); }
-  }
-
-  function showTab(which){
-    const isDraw = which === "draw";
-    document.getElementById("draw").classList.toggle("hide", !isDraw);
-    document.getElementById("gallery").classList.toggle("hide", isDraw);
-    document.getElementById("tabDraw").classList.toggle("active", isDraw);
-    document.getElementById("tabGallery").classList.toggle("active", !isDraw);
-    if(!isDraw) buildGallery();
-  }
-  let galleryBuilt = false;
-  function buildGallery(){
-    if(galleryBuilt) return; galleryBuilt = true;
-    document.getElementById("grid").innerHTML = CARDS.map(c=>`<div class="cell"><img loading="lazy" src="${c.img}" alt="${esc(c.ko)}" /><div class="cn">${esc(c.ko)}</div></div>`).join("");
-  }
-</script>
-</body>
-</html>
-
-  .divider { border-top:1px solid rgba(233,196,106,.2); padding-top:18px; margin-top:4px; }
-  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
-  .cell { border:1px solid rgba(233,196,106,.3); border-radius:10px; overflow:hidden; background:#0d0a1f; }
-  .cell img { width:100%; aspect-ratio:5/8; object-fit:contain; display:block; background:#0d0a1f; }
-  .cell .cn { font-size:11px; text-align:center; padding:5px 2px; }
-  .hide { display:none; }
-</style>
-</head>
-<body>
-<div class="wrap">
-  <div class="head">
-    <div class="kicker">✦ FATE TAROT ✦</div>
-    <h1>운명타로</h1>
-    <div class="sub">궁금한 걸 묻고, 꼬리에 꼬리를 무는 운명을 확인해봐</div>
-  </div>
-
-  <div class="tabs">
-    <div class="tab active" id="tabDraw" onclick="showTab('draw')">🔮 점 보기</div>
-    <div class="tab" id="tabGallery" onclick="showTab('gallery')">🎴 78장 갤러리</div>
-  </div>
-
-  <div id="draw">
-    <div id="askBox">
-      <label>무엇이 궁금해? 마음속 질문을 적어줘.</label>
-      <textarea id="q" rows="3" placeholder="예) 내 미래의 직업은 어떤 모습일까?"></textarea>
-      <button class="btn" id="drawBtn" onclick="firstDraw()">🔮 카드 뽑기</button>
-      <div class="note">전체 78장 중 한 장을 무작위로 뽑아요</div>
-    </div>
-    <div id="reading" class="hide">
-      <div id="thread"></div>
-      <div class="divider">
-        <label>더 깊이 들어가 볼까? 이어서 물어봐.</label>
-        <textarea id="q2" rows="2" placeholder="예) 그 직업에서 성공하려면 뭐가 필요할까?"></textarea>
-        <button class="btn" id="moreBtn" onclick="moreDraw()">🃏 카드 한 장 더 뽑기</button>
-      </div>
-      <button class="btn ghost" id="shareBtn" onclick="share()">💌 상담 전체 공유하기</button>
-      <div id="shareBox"></div>
-      <div class="note">📸 화면을 캡처해서 친구에게 자랑해도 좋아요!</div>
-      <button class="btn plain" onclick="resetAll()">✦ 처음부터 다시</button>
-      <div class="note">운명타로는 재미로 보는 콘텐츠예요 :)</div>
-    </div>
-  </div>
-
-  <div id="gallery" class="hide">
-    <div class="note" style="margin-top:0;margin-bottom:12px">스크롤하면 78장의 진짜 타로 그림이 모두 떠요 ✦</div>
-    <div class="grid" id="grid"></div>
-  </div>
-</div>
-
-<script>
-  const MAJORS = [
-    ["The Fool","바보","🃏","새로운 시작, 자유"],["The Magician","마법사","🪄","창조, 의지"],
-    ["The High Priestess","여사제","🌙","직관, 비밀"],["The Empress","여황제","🌸","풍요, 사랑"],
-    ["The Emperor","황제","👑","권위, 안정"],["The Hierophant","교황","🗝️","전통, 가르침"],
-    ["The Lovers","연인","💕","사랑, 선택"],["The Chariot","전차","🛡️","의지, 전진"],
-    ["Strength","힘","🦁","용기, 인내"],["The Hermit","은둔자","🏮","성찰, 지혜"],
-    ["Wheel of Fortune","운명의 수레바퀴","🎡","변화, 행운"],["Justice","정의","⚖️","균형, 진실"],
-    ["The Hanged Man","매달린 사람","🙃","멈춤, 새 관점"],["Death","죽음","🦋","끝과 시작, 변화"],
-    ["Temperance","절제","🍶","조화, 균형"],["The Devil","악마","⛓️","욕망, 집착"],
-    ["The Tower","탑","🗼","변동, 각성"],["The Star","별","⭐","희망, 영감"],
-    ["The Moon","달","🌕","불안, 직감"],["The Sun","태양","☀️","기쁨, 성공"],
-    ["Judgement","심판","📯","부활, 결단"],["The World","세계","🌍","완성, 성취"],
-  ];
-  const ROMAN = ["0","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI"];
-  const SUITS = [["완드","Wands","🔥","열정, 도전"],["컵","Cups","💧","감정, 사랑"],["소드","Swords","⚔️","생각, 갈등"],["펜타클","Pentacles","🪙","돈, 현실"]];
-  const RANKS = [["에이스","Ace"],["2","Two"],["3","Three"],["4","Four"],["5","Five"],["6","Six"],["7","Seven"],["8","Eight"],["9","Nine"],["10","Ten"],["시종","Page"],["기사","Knight"],["여왕","Queen"],["왕","King"]];
-  const RANK_BADGE = ["A","2","3","4","5","6","7","8","9","10","P","Kn","Q","K"];
-  const CARD_IMG = [
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/RWS_Tarot_00_Fool.jpg/500px-RWS_Tarot_00_Fool.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/RWS_Tarot_01_Magician.jpg/500px-RWS_Tarot_01_Magician.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/RWS_Tarot_02_High_Priestess.jpg/500px-RWS_Tarot_02_High_Priestess.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/RWS_Tarot_03_Empress.jpg/500px-RWS_Tarot_03_Empress.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/RWS_Tarot_04_Emperor.jpg/500px-RWS_Tarot_04_Emperor.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/RWS_Tarot_05_Hierophant.jpg/500px-RWS_Tarot_05_Hierophant.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/RWS_Tarot_06_Lovers.jpg/500px-RWS_Tarot_06_Lovers.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/RWS_Tarot_07_Chariot.jpg/500px-RWS_Tarot_07_Chariot.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/RWS_Tarot_08_Strength.jpg/500px-RWS_Tarot_08_Strength.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/RWS_Tarot_09_Hermit.jpg/500px-RWS_Tarot_09_Hermit.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/RWS_Tarot_10_Wheel_of_Fortune.jpg/500px-RWS_Tarot_10_Wheel_of_Fortune.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/RWS_Tarot_11_Justice.jpg/500px-RWS_Tarot_11_Justice.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/RWS_Tarot_12_Hanged_Man.jpg/500px-RWS_Tarot_12_Hanged_Man.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/RWS_Tarot_13_Death.jpg/500px-RWS_Tarot_13_Death.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/RWS_Tarot_14_Temperance.jpg/500px-RWS_Tarot_14_Temperance.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/RWS_Tarot_15_Devil.jpg/500px-RWS_Tarot_15_Devil.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/RWS_Tarot_16_Tower.jpg/500px-RWS_Tarot_16_Tower.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/RWS_Tarot_17_Star.jpg/500px-RWS_Tarot_17_Star.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/RWS_Tarot_18_Moon.jpg/500px-RWS_Tarot_18_Moon.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/RWS_Tarot_19_Sun.jpg/500px-RWS_Tarot_19_Sun.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/RWS_Tarot_20_Judgement.jpg/500px-RWS_Tarot_20_Judgement.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/RWS_Tarot_21_World.jpg/500px-RWS_Tarot_21_World.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Wands01.jpg/500px-Wands01.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Wands02.jpg/500px-Wands02.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Wands03.jpg/500px-Wands03.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Wands04.jpg/500px-Wands04.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Wands05.jpg/500px-Wands05.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Wands06.jpg/500px-Wands06.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Wands07.jpg/500px-Wands07.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Wands08.jpg/500px-Wands08.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Wands09.jpg/500px-Wands09.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Wands10.jpg/500px-Wands10.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Wands11.jpg/500px-Wands11.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Wands12.jpg/500px-Wands12.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Wands13.jpg/500px-Wands13.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Wands14.jpg/500px-Wands14.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Cups01.jpg/500px-Cups01.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Cups02.jpg/500px-Cups02.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Cups03.jpg/500px-Cups03.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Cups04.jpg/500px-Cups04.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Cups05.jpg/500px-Cups05.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Cups06.jpg/500px-Cups06.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Cups07.jpg/500px-Cups07.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cups08.jpg/500px-Cups08.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Cups09.jpg/500px-Cups09.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Cups10.jpg/500px-Cups10.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Cups11.jpg/500px-Cups11.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Cups12.jpg/500px-Cups12.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Cups13.jpg/500px-Cups13.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Cups14.jpg/500px-Cups14.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Swords01.jpg/500px-Swords01.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Swords02.jpg/500px-Swords02.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Swords03.jpg/500px-Swords03.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Swords04.jpg/500px-Swords04.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Swords05.jpg/500px-Swords05.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Swords06.jpg/500px-Swords06.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Swords07.jpg/500px-Swords07.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Swords08.jpg/500px-Swords08.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Swords09.jpg/500px-Swords09.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Swords10.jpg/500px-Swords10.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Swords11.jpg/500px-Swords11.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Swords12.jpg/500px-Swords12.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Swords13.jpg/500px-Swords13.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Swords14.jpg/500px-Swords14.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Pents01.jpg/500px-Pents01.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Pents02.jpg/500px-Pents02.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Pents03.jpg/500px-Pents03.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Pents04.jpg/500px-Pents04.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Pents05.jpg/500px-Pents05.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Pents06.jpg/500px-Pents06.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Pents07.jpg/500px-Pents07.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Pents08.jpg/500px-Pents08.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Pents09.jpg/500px-Pents09.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Pents10.jpg/500px-Pents10.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Pents11.jpg/500px-Pents11.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Pents12.jpg/500px-Pents12.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Pents13.jpg/500px-Pents13.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Pents14.jpg/500px-Pents14.jpg",
-  ];
-
-  const CARDS = [];
-  MAJORS.forEach((m,i)=>CARDS.push({en:m[0],ko:m[1],sym:m[2],key:m[3],arcana:"메이저 아르카나",badge:ROMAN[i]}));
-  SUITS.forEach((s)=>RANKS.forEach((r,ri)=>CARDS.push({en:r[1]+" of "+s[1],ko:s[0]+" "+r[0],sym:s[2],key:s[3],arcana:"마이너 · "+s[0],badge:RANK_BADGE[ri]})));
-  CARDS.forEach((c,i)=>c.img=CARD_IMG[i]);
-
-  let entries = [];
-
-  function esc(s){ return (s||"").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-
-  function cardHTML(c, reversed){
-    return `<div class="card"><div class="pic">
-      <img src="${c.img}" alt="${esc(c.ko)}" style="transform:${reversed?'rotate(180deg)':'none'}" />
-      <div class="badge">${c.badge}</div>${reversed?'<div class="rev">역방향</div>':''}
-      </div><div class="strip">
-      <div class="arc">${c.arcana}</div><div class="nm">${esc(c.ko)}</div>
-      <div class="en">${c.en}</div><div class="mark">✦ 운명타로 ✦</div></div></div>`;
-  }
-
-  function renderThread(){
-    document.getElementById("thread").innerHTML = entries.map((e,i)=>{
-      let body;
-      if(e.loading) body = '<div class="spin"></div><div style="text-align:center;color:var(--muted)">카드의 기운을 읽는 중...</div>';
-      else if(e.error) body = '<span style="color:#ff9d9d">운명의 기운이 잠시 흐려졌어. 한 장 더 뽑아볼래?</span>';
-      else body = esc(e.reading);
-      return `<div class="entry"><div class="qline"><b>Q${i+1}.</b> ${esc(e.q)}</div>${cardHTML(e.card,e.reversed)}<div class="reading">${body}</div></div>`;
-    }).join("");
-  }
-
-  function buildPrompt(prior, q, card, reversed){
-    const persona = "너는 '운명타로' 앱의 신비로운 타로 마스터야. 딱딱하지 않고 친한 친구처럼 편하게 반말로 얘기해.";
-    let ctx = "";
-    if(prior.length){
-      ctx = "지금까지의 상담 흐름:\n" + prior.map((e,i)=>`${i+1}) 질문 "${e.q}" → 카드 ${e.card.ko}(${e.reversed?'역':'정'}) → 풀이: ${e.reading}`).join("\n") + "\n\n";
-    }
-    return persona + "\n" + ctx + (prior.length?"이어지는 추가 질문":"질문") + `: "${q}"\n`
-      + `이번에 뽑은 카드: ${card.ko} (${card.en}) - ${reversed?'역방향':'정방향'}\n`
-      + (prior.length
-          ? "앞의 흐름을 자연스럽게 이어받아서, 이번 카드로 이 질문에 더 깊이 있게 답해줘. 가능하면 앞에 나온 카드와 연결지어 이야기해줘."
-          : "이 카드 한 장으로 질문에 따뜻하고 재미있게 답해줘.")
-      + "\n\n규칙:\n- 한국어로 3~5문장 정도\n- 신비롭지만 너무 무겁지 않게\n- 카드 이름을 자연스럽게 한 번 언급\n- 마지막은 기운 나는 한마디로 마무리\n- 가볍게 재미로 보는 분위기 유지";
-  }
-
-  async function callAI(prompt){
-    const r = await fetch("/api/reading", {
-      method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify({ prompt })
-    });
-    const d = await r.json();
-    if(!r.ok || d.error) throw new Error(d.error || "오류");
-    return d.text;
-  }
-
-  async function draw(q){
-    const card = CARDS[Math.floor(Math.random()*CARDS.length)];
-    const reversed = Math.random() < 0.4;
-    const prior = entries.slice();
-    const entry = { q, card, reversed, reading:"", loading:true, error:false };
-    entries.push(entry);
-    document.getElementById("askBox").classList.add("hide");
-    document.getElementById("reading").classList.remove("hide");
-    document.getElementById("shareBox").innerHTML = "";
-    document.getElementById("moreBtn").disabled = true;
-    renderThread();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    try {
-      entry.reading = await callAI(buildPrompt(prior, q, card, reversed));
-    } catch(e) {
-      entry.error = true;
-    } finally {
-      entry.loading = false;
-      document.getElementById("moreBtn").disabled = false;
-      renderThread();
-    }
-  }
-
-  function firstDraw(){
-    const q = document.getElementById("q").value.trim();
-    if(!q) return;
-    draw(q);
-  }
-  function moreDraw(){
-    const el = document.getElementById("q2");
-    const q = el.value.trim();
-    if(!q) return;
-    el.value = "";
-    draw(q);
-  }
-  function resetAll(){
-    entries = [];
-    document.getElementById("q").value = "";
-    document.getElementById("reading").classList.add("hide");
-    document.getElementById("askBox").classList.remove("hide");
-  }
-
-  function shareText(){
-    return "🔮 운명타로\n\n" + entries.map((e,i)=>`Q${i+1}. ${e.q}\n[${e.card.ko}${e.reversed?' 역':''}] ${e.reading}`).join("\n\n") + "\n\n— 운명타로에서 뽑았어 ✦";
-  }
-  async function share(){
-    if(!entries.length) return;
-    const text = shareText();
-    if(navigator.share){ try { await navigator.share({title:"운명타로 🔮", text}); return; } catch(e){} }
-    try { await navigator.clipboard.writeText(text); } catch(e){}
-    document.getElementById("shareBox").innerHTML =
-      `<p style="color:var(--gold-soft);font-size:13px;margin:12px 0 6px">아래 글을 복사해서 친구에게 보내봐 👇</p>
-       <textarea readonly rows="8" onclick="this.select()" style="width:100%;padding:14px;border-radius:12px;border:1px solid var(--gold);background:rgba(0,0,0,.25);color:var(--cream);font-size:13px;line-height:1.6">${esc(text)}</textarea>`;
+       <textarea readonly rows="10" onclick="this.select()" style="width:100%;padding:14px;border-radius:12px;border:1px solid var(--gold);background:rgba(0,0,0,.25);color:var(--cream);font-size:13px;line-height:1.6">${esc(text)}</textarea>`;
     const ta = document.querySelector("#shareBox textarea"); if(ta){ ta.focus(); ta.select(); }
   }
 
