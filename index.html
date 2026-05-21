@@ -62,13 +62,13 @@
   .spreadmark { text-align:center; font-size:9px; letter-spacing:3px; color:rgba(244,213,141,.55); margin-top:8px; }
   .reading { margin-top:14px; }
   .rblock { background:rgba(255,255,255,.05); border:1px solid rgba(233,196,106,.22);
-    border-radius:14px; padding:14px 16px; margin-bottom:10px; line-height:1.65; font-size:14px;
-    animation:fadeUp .5s ease both; }
+    border-radius:14px; padding:14px 16px; margin-bottom:10px; line-height:1.7; font-size:14px;
+    white-space:pre-line; animation:fadeUp .5s ease both; }
   .rlabel { display:block; font-family:"Nanum Myeongjo",serif; font-weight:700; font-size:14px;
     color:var(--gold-soft); margin-bottom:5px; }
   .rclose { background:linear-gradient(160deg,rgba(233,196,106,.16),rgba(233,196,106,.06));
     border:1px solid rgba(233,196,106,.35); border-radius:14px; padding:14px 16px;
-    line-height:1.65; font-size:14px; animation:fadeUp .5s ease both; }
+    line-height:1.7; font-size:14px; white-space:pre-line; animation:fadeUp .5s ease both; }
   .rclose b { color:var(--gold-soft); }
   .spin { width:26px; height:26px; border:3px solid rgba(233,196,106,.25); border-top-color:var(--gold);
     border-radius:50%; margin:6px auto 12px; animation:spin .8s linear infinite; }
@@ -385,8 +385,8 @@
       if(d.closing) html += `<div class="rclose"><b>총평 ✦</b> ${esc(d.closing)}</div>`;
       return html;
     }
-    // JSON 파싱 실패 시: 통째로라도 보여주기
-    return `<div class="rblock">${esc(e.raw||"")}</div>`;
+    // 형식이 깨졌을 때: 표시를 정리해서 통째로라도 읽기 좋게
+    return `<div class="rblock">${esc((e.raw||"").replace(/\[\[\s*(과거|현재|미래|조언|총평)\s*\]\]/g,"\n").trim())}</div>`;
   }
 
   function renderThread(){
@@ -416,11 +416,16 @@
     return persona + "\n" + ctx + (prior.length?"이어지는 추가 질문":"질문") + `: "${q}"\n\n`
       + "이번에 과거·현재·미래 3장을 뽑았어:\n" + cardLines + "\n\n"
       + (prior.length ? "앞의 상담 흐름과도 자연스럽게 이어서, " : "")
-      + "각 카드를 그 자리(과거/현재/미래)의 의미로, 위의 전통 의미를 참고해서 아주 상세하게 풀어줘. "
-      + "카드 그림 속 상징(인물, 색, 사물 등)도 곁들여 설명하면서, 질문과 어떻게 연결되는지 구체적으로 짚어줘.\n\n"
-      + "반드시 아래 JSON 형식으로만 답해. 다른 말이나 마크다운 표시는 절대 붙이지 마.\n"
-      + '{"past":"과거 카드 풀이를 아주 상세하게 4~6문장","present":"현재 카드 풀이 4~6문장","future":"미래 카드 풀이 4~6문장","advice":"지금 무엇을 하면 좋을지 구체적인 조언 3~4문장","closing":"세 장을 아우르는 따뜻한 마무리 2~3문장"}\n\n'
-      + "조건: 한국어, 친구처럼 편한 반말, 각 카드 이름을 자연스럽게 언급, 신비롭지만 따뜻하고 이해하기 쉽게, 과하다 싶을 만큼 풍부하고 자세하게. 단정적 단언은 피하고 가볍게 재미로 보는 분위기는 유지.";
+      + "각 카드를 그 자리(과거/현재/미래)의 의미로 아주 상세하게 풀어줘. "
+      + "특히 카드 그림 속 상징을 구체적으로 짚어줘 — 인물의 옷 색깔, 손에 든 물건, 자세, 배경 풍경 같은 걸 언급하고, 그게 무슨 의미인지, 그리고 그게 질문 속 상황(과거/현재/미래)과 어떻게 연결되는지 풀어줘.\n"
+      + "예시 느낌: \"검 여왕의 흰 드레스와 푸른 망토는 맑은 이성과 차분한 감정을 뜻하는데, 이건 네가 과거에 감정을 누르고 냉정하게 판단했던 시기를 보여줘…\" 처럼 그림의 상징을 의미·상황과 연결해서 자세히.\n\n"
+      + "아래 형식 그대로, 각 항목을 [[ ]] 표시로 구분해서만 답해. 인사말·마크다운·다른 말은 절대 붙이지 마.\n\n"
+      + "[[과거]]\n(과거 카드 풀이, 그림 상징을 짚으며 5~7문장)\n"
+      + "[[현재]]\n(현재 카드 풀이 5~7문장)\n"
+      + "[[미래]]\n(미래 카드 풀이 5~7문장)\n"
+      + "[[조언]]\n(지금 무엇을 하면 좋을지 구체적 조언 3~4문장)\n"
+      + "[[총평]]\n(세 장을 아우르는 따뜻한 마무리 2~3문장)\n\n"
+      + "조건: 한국어, 친구처럼 편한 반말, 단정적 단언은 피하고, 신비롭지만 따뜻하고 이해하기 쉽게.";
   }
 
   async function callAI(prompt){
@@ -433,13 +438,15 @@
   }
 
   function parseReading(text){
-    try {
-      let t = String(text).replace(/```json/gi,"").replace(/```/g,"").trim();
-      const a = t.indexOf("{"), b = t.lastIndexOf("}");
-      if(a>=0 && b>a) t = t.slice(a, b+1);
-      const obj = JSON.parse(t);
-      if(obj && obj.past && obj.present && obj.future) return obj;
-    } catch(e){}
+    const keys = { "과거":"past", "현재":"present", "미래":"future", "조언":"advice", "총평":"closing" };
+    const parts = String(text).split(/\[\[\s*(과거|현재|미래|조언|총평)\s*\]\]/);
+    const out = {};
+    for(let i=1;i<parts.length;i+=2){
+      const label = parts[i];
+      const content = (parts[i+1]||"").replace(/^[\s:：]+/,"").trim();
+      if(keys[label] && content) out[keys[label]] = content;
+    }
+    if(out.past && out.present && out.future) return out;
     return null;
   }
 
